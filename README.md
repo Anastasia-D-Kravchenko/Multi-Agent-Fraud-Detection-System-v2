@@ -25,7 +25,7 @@ Options: `--verbose/-v` (print top fraud transactions per dataset), `--threshold
 
 Results are written to `outputs/` (one fraud transaction ID per line). The challenge datasets are in the dataset folders next to the script. If you reuse them, check the challenge terms first.
 
-### Dataset Profiles & Performance Metrics
+## Dataset Profiles & Performance Metrics
 The system dynamically scales across three distinct scenario environments. Below is the summary of the datasets processed and the exact fraud detection rates achieved during validation:
 
 * **The Truman Show (Train/Val)**
@@ -41,13 +41,13 @@ The system dynamically scales across three distinct scenario environments. Below
   * **Fraud Rate**: 2.6% - 2.8% (53-57 flagged)
   * **Primary Threat Vector**: Highly sophisticated fraud involving "impossible travel" speeds (>900 km/h) and coordinated money mule networks (4+ distinct senders).
 
-### Adaptive Thresholding Strategy
+## Adaptive Thresholding Strategy
 Instead of a static cutoff, the `OrchestratorAgent` applies dataset-specific threshold tuning based on the environment's threat landscape:
 - **Truman / BNW (Threshold: 0.10):** These datasets are relatively clean but require higher sensitivity to meet recall requirements. 
 - **Deus Ex (Threshold: 0.25):** Contains incredibly strong geographic signals (e.g., Haversine distances > 5000km). The threshold is kept stricter to prevent false positives from normal, high-wealth user travel.
 - **Fail-Safe Fallback:** If the static threshold yields 0 flagged transactions, the orchestrator automatically falls back to a top-1% or top-5% percentile cutoff to guarantee baseline detection.
 
-### Technical Deep Dive: Key Signal Highlights
+## Technical Deep Dive: Key Signal Highlights
 * **Mathematical Outliers:** The `TransactionAnalystAgent` calculates live standard deviations. A z-score `> 3.0` applies a high penalty (0.30), while extreme anomalies `> 4.0` trigger severe alerts (0.45 weight).
 * **Kinematic Verification:** The `AnomalyDetectorAgent` calculates the Great-Circle (Haversine) distance between consecutive GPS pings. Travel speeds exceeding 900 km/h instantly trigger an "impossible travel" multiplier.
 * **NLP Phishing Signatures:** The `PhishingDetectorAgent` uses Regex to scan communications for urgent directives (`48 hours`, `immediately`) coupled with obfuscated domains (`paypa1`, `amaz0n`, `secure-bank-login`).
